@@ -71,3 +71,7 @@ h1,h2,.sectionHead h2,.resultsHead h2{font-family:var(--font-body);letter-spacin
 
 /* RTL gallery controls: previous points right, next points left */
 @media(max-width:600px){.galleryPrev .icon{transform:rotate(180deg)}.galleryNext .icon{transform:none}}
+
+/* Quiet contact-method dock: brand is an icon accent, not a bordered rainbow */
+.contactActions{display:flex;align-items:flex-start;justify-content:flex-start;gap:8px;margin:14px 0 16px}.contact .contactMethod{display:grid;justify-items:center;gap:6px;min-width:68px;width:auto;margin:0;padding:9px 8px;border:0!important;border-radius:12px;background:#f6f5f2!important;color:var(--ink)!important;font-size:11px;font-weight:600;box-shadow:none}.contactMethod .icon{width:22px;height:22px}.contactMethod.whatsapp .icon{color:#1eaa59}.contactMethod.phone .icon{color:#2474c9}.contactMethod.mail .icon{color:#b97912}.contactMethod.instagram .icon{color:#c72e72}.contact .contactMethod:hover{background:#efeee9!important}.contact .primary{margin-top:2px}
+@media(max-width:600px){.contactActions{gap:10px;overflow-x:auto;scrollbar-width:none}.contact .contactMethod{flex:0 0 70px}.contactActions::-webkit-scrollbar{display:none}}
