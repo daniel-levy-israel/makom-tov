@@ -52,3 +52,7 @@ h1,h2,.sectionHead h2,.resultsHead h2{font-family:var(--font-body);letter-spacin
 /* Categorized amenities with object-specific pictograms */
 .amenityGroups{display:grid;gap:30px}.amenityGroup h3{font-size:17px;margin:0 0 15px}.amenityGroup+.amenityGroup{padding-top:24px;border-top:1px solid var(--line)}.amenity{align-items:flex-start;line-height:1.35}.amenity .icon{width:24px;height:24px;color:var(--ink);margin-top:-2px}
 @media(max-width:600px){.amenityGroups{gap:24px}.amenityGroup h3{font-size:16px;margin-bottom:13px}.amenityGroup+.amenityGroup{padding-top:20px}.amenities{grid-template-columns:1fr}.amenity{font-size:15px;gap:12px}}
+
+/* Hard reset legacy generated-glyph actions: one SVG per control */
+.propertyNav .backBtn:after,.propertyNav #saveProperty:after,.propertyNav #shareProperty:after{content:none!important;display:none!important}.propertyNav button>svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.propertyPage~* .savedBtn{display:none}
+@media(max-width:600px){body:has(.propertyPage)>.topbar .savedBtn{display:none}.propertyNav>div{gap:10px}.propertyNav button{width:38px!important;height:38px!important}.propertyNav .backBtn{margin-inline-start:auto}.propertyNav>div{margin-inline-start:0}.propertyNav{flex-direction:row-reverse}}
