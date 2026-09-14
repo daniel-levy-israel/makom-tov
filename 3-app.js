@@ -1,0 +1,37 @@
+let instagram={},all=[],filtered=[],shown=18,rating=0,quick=new Set(),favs=new Set(JSON.parse(localStorage.getItem('makom-favs')||'[]'));
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const amenity=(p,re)=>p.amenities.some(x=>re.test(x));
+const image=(p,i=0)=>p.images[i]?`<img src="${esc(p.images[i])}" alt="${esc(p.name)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=noPhoto><i>⌂</i><span>התמונה תעלה בקרוב</span></div>'">`:`<div class="noPhoto"><i>⌂</i><span>התמונה תעלה בקרוב</span></div>`;
+function init(){
+ const cats=[...new Set(all.map(x=>x.category).filter(Boolean))].sort(), regs=[...new Set(all.map(x=>x.region).filter(Boolean))].sort();
+ $('#category').innerHTML+ cats.map(x=>`<option>${esc(x)}</option>`).join(''); $('#region').innerHTML+=regs.map(x=>`<option>${esc(x)}</option>`).join('');
+ $('#favCount').textContent=favs.size; bind(); apply();
+}
+function bind(){
+ ['q','category','guests','region','price','withPrice'].forEach(id=>$('#'+id).addEventListener(id==='q'?'input':'change',()=>{shown=18;apply()}));
+ $('#price').addEventListener('input',()=>$('#priceVal').textContent='₪'+(+$('#price').value).toLocaleString('he-IL'));
+ $('#sort').addEventListener('change',apply); $('#searchBtn').onclick=apply; $('#more').onclick=()=>{shown+=18;render()};
+ $$('.quick button').forEach(b=>b.onclick=()=>{b.classList.toggle('active');quick.has(b.dataset.quick)?quick.delete(b.dataset.quick):quick.add(b.dataset.quick);shown=18;apply()});
+ $('#filterOpen').onclick=()=>document.body.classList.add('filtersOpen');$('#filterClose').onclick=()=>document.body.classList.remove('filtersOpen');
+ $('#clear').onclick=()=>{['q','category','region'].forEach(x=>$('#'+x).value='');$('#guests').value=0;$('#price').value=2500;$('#withPrice').checked=false;quick.clear();$$('.quick button').forEach(x=>x.classList.remove('active'));apply()};
+ $('#detail .close').onclick=$('#detail .shade').onclick=()=>closeDetail(); document.addEventListener('keydown',e=>e.key==='Escape'&&closeDetail());
+ $('#favBtn').onclick=()=>{if(!favs.size)return toast('עדיין לא שמרתם מקומות'); filtered=all.filter(x=>favs.has(x.id));shown=1000;render('המקומות ששמרתם')};
+}
+function apply(){let q=$('#q').value.trim().toLowerCase(),cat=$('#category').value,reg=$('#region').value,g=+$('#guests').value,max=+$('#price').value;
+ filtered=all.filter(p=>(!q||[p.name,p.town,p.region,p.category,p.desc].join(' ').toLowerCase().includes(q))&&(!cat||p.category===cat)&&(!reg||p.region===reg)&&(!g||p.guests>=g)&&(!$('#withPrice').checked||p.priceMin)&&(!p.priceMin||p.priceMin<=max)&&(!quick.has('pool')||amenity(p,/בריכה/))&&(!quick.has('hot')||amenity(p,/ג.?קוזי/))&&(!quick.has('family')||amenity(p,/משפח|ילדים/))&&(!quick.has('view')||amenity(p,/נוף/))&&(!quick.has('kosher')||amenity(p,/דתי|כשר|בית כנסת/))&&(!quick.has('book')||p.book));
+ let sort=$('#sort').value;if(sort==='price')filtered.sort((a,b)=>(a.priceMin||1e9)-(b.priceMin||1e9));else filtered.sort((a,b)=>(b.images.length-a.images.length)||(b.desc.length-a.desc.length)||(a.name.localeCompare(b.name,'he')));render();
+}
+function render(title){$('#resultTitle').textContent=title||($('#q').value?`תוצאות עבור "${$('#q').value}"`:'מקומות שכדאי להכיר');$('#count').textContent=`${filtered.length.toLocaleString('he-IL')} מקומות נמצאו`;
+ $('#grid').innerHTML=filtered.slice(0,shown).map(p=>`<article class="card" data-id="${p.id}"><div class="photo">${image(p)}<button class="heart ${favs.has(p.id)?'saved':''}" aria-label="שמירה">${favs.has(p.id)?'♥':'♡'}</button>${p.book?'<span class="badge">הזמנה אונליין</span>':''}</div><h3>${esc(p.name)}</h3><p class="meta">${esc([p.category,p.town,p.region].filter(Boolean).join(' · '))}</p><div class="cardline"><span class="desc">${p.googleRating?`★ ${p.googleRating} (${p.googleReviews||0})`:p.guests?`עד ${p.guests} אורחים`:p.units?`${p.units} יחידות`:''}</span><span class="price">${p.priceMin?`החל מ־<strong>₪${p.priceMin.toLocaleString('he-IL')}</strong>`:'מחיר בפנייה'}</span></div></article>`).join('');
+ $$('.card').forEach(c=>c.onclick=e=>{let id=+c.dataset.id;if(e.target.closest('.heart')){toggleFav(id,e.target.closest('.heart'));e.stopPropagation()}else openDetail(id)});$('#more').style.display=shown<filtered.length?'block':'none';
+}
+function toggleFav(id,b){favs.has(id)?favs.delete(id):favs.add(id);localStorage.setItem('makom-favs',JSON.stringify([...favs]));b.classList.toggle('saved');b.textContent=favs.has(id)?'♥':'♡';$('#favCount').textContent=favs.size;toast(favs.has(id)?'נשמר לרשימה':'הוסר מהרשימה')}
+function cleanPhone(s){return String(s||'').replace(/\D/g,'').replace(/^0/,'972')}
+function openDetail(id){let p=all.find(x=>x.id===id),ig=instagram[id]||'';history.pushState({},'',`/property/${id}`);let more=p.images.slice(1,3);let map=p.lat&&p.lng?`<a class="mapLink" href="${esc(p.maps||'#')}" target="_blank" rel="noopener"><div class="cleanMap"><div class="mapgrid"></div><span class="pin">●</span><strong>${esc(p.town||p.region||'ישראל')}</strong><small>${p.lat.toFixed(3)}, ${p.lng.toFixed(3)} · פתיחה במפות</small></div></a>`:'';
+ $('#detailBody').innerHTML=`<div class="gallery"><div class="photo">${image(p)}</div><div class="side">${more.map((_,i)=>`<div class="photo">${image(p,i+1)}</div>`).join('')}</div></div><div class="detailTop"><h1>${esc(p.name)}</h1><p class="detailMeta">${esc([p.category,p.town,p.region].filter(Boolean).join(' · '))}${p.guests?` · עד ${p.guests} אורחים`:''}${p.googleRating?` · ★ ${p.googleRating} ב-Google (${p.googleReviews||0} ביקורות)`:''}</p></div><div class="detailsplit"><div><h2>על המקום</h2><p>${esc(p.desc||'מקום אירוח לחופשה ישראלית. פרטים נוספים זמינים בשיחה ישירה עם המארחים.')}</p>${p.amenities.length?`<h2>מה יש במקום</h2><div class="amenities">${p.amenities.slice(0,18).map(x=>`<span>✓ ${esc(x)}</span>`).join('')}</div>`:''}${map}</div><aside class="contact"><h3>${p.priceMin?`החל מ־₪${p.priceMin.toLocaleString('he-IL')} ללילה`:'לקבלת מחיר'}</h3><p>צרו קשר ישירות עם המקום לבדיקת זמינות ופרטים.</p>${p.phone?`<a href="tel:${cleanPhone(p.phone)}">שיחה למקום</a>`:''}${p.whatsapp?`<a class="secondary" href="https://wa.me/${cleanPhone(p.whatsapp)}">WhatsApp</a>`:''}${p.website?`<a class="secondary" href="${esc(p.website)}" target="_blank" rel="noopener">האתר הרשמי</a>`:''}${ig?`<a class="secondary instagram" href="${esc(ig)}" target="_blank" rel="noopener">Instagram</a>`:'<p class="igSoon">עמוד Instagram יתווסף אחרי אימות</p>'}<button class="secondary share" onclick="navigator.share?navigator.share({title:'${esc(p.name)}',url:location.href}):navigator.clipboard.writeText(location.href)">שיתוף</button></aside></div>`;
+ $('#detail').classList.add('open');$('#detail').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+}
+function closeDetail(){if(!$('#detail').classList.contains('open'))return;$('#detail').classList.remove('open');document.body.style.overflow='';history.pushState({},'',location.pathname.startsWith('/property/')?'/':'')}
+function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',1700)}
+Promise.all([fetch('/properties.json').then(r=>r.json()),fetch('/instagram.json').then(r=>r.ok?r.json():{})]).then(([x,ig])=>{instagram=ig;all=x;let m=location.pathname.match(/\/property\/(\d+)/);init();if(m)openDetail(+m[1])}).catch(()=>{$('#count').textContent='לא הצלחנו לטעון את המקומות';});
