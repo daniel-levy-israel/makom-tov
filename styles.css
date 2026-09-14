@@ -4,3 +4,4 @@
 @media(max-width:380px){.hero h1{font-size:47px}.grid{grid-template-columns:1fr}.photo{aspect-ratio:1.2}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}@media(prefers-contrast:more){:root{--muted:#3f4845;--line:#919893}.heroShade{background:#17201db8}}
 html,body{max-width:100%;overflow-x:hidden}
+.skeletonCard{pointer-events:none}.skeletonCard .photo,.skeletonCard i{display:block;background:linear-gradient(90deg,#e4e2dc 25%,#f0eee9 45%,#e4e2dc 65%);background-size:300% 100%;animation:shimmer 1.5s infinite}.skeletonCard i{height:14px;border-radius:8px;margin-top:12px;width:72%}.skeletonCard i:last-child{width:45%;margin-top:7px}@keyframes shimmer{to{background-position:-150% 0}}
