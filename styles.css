@@ -30,3 +30,5 @@ h1,h2,.sectionHead h2,.resultsHead h2{font-family:var(--font-body);letter-spacin
 /* Original Makom Tov category pictograms */
 .categoryCard .icon svg{stroke-width:1.65}
 .categoryCard.active{color:#c11246!important;border-bottom-color:#c11246!important}
+.categoryCard .icon{color:var(--icon-color,currentColor)}
+.categoryCard.active .icon{color:var(--icon-color,#c11246)}
