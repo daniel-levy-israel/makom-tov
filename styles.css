@@ -32,3 +32,5 @@ h1,h2,.sectionHead h2,.resultsHead h2{font-family:var(--font-body);letter-spacin
 .categoryCard.active{color:#c11246!important;border-bottom-color:#c11246!important}
 .categoryCard .icon{color:var(--icon-color,currentColor)}
 .categoryCard.active .icon{color:var(--icon-color,#c11246)}
+.categoryCard .icon svg{overflow:visible;filter:drop-shadow(0 1px 1px rgba(38,37,31,.12))}
+.categoryCard.active .icon{transform:translateY(-1px)}
