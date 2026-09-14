@@ -48,3 +48,7 @@ h1,h2,.sectionHead h2,.resultsHead h2{font-family:var(--font-body);letter-spacin
 /* Interactive property location */
 .propertyLocation>p{color:var(--muted);margin:-4px 0 15px}.propertyMap{height:360px;border-radius:18px;overflow:hidden;border:1px solid var(--line);z-index:1;touch-action:pan-x pan-y}.propertyMap .leaflet-control-attribution{font-size:9px}.mapExternalLink{display:inline-block;margin-top:13px;color:var(--ink);font-weight:600;text-underline-offset:3px}
 @media(max-width:600px){.propertyMap{height:290px;border-radius:14px}.propertyLocation{padding-bottom:30px!important}}
+
+/* Categorized amenities with object-specific pictograms */
+.amenityGroups{display:grid;gap:30px}.amenityGroup h3{font-size:17px;margin:0 0 15px}.amenityGroup+.amenityGroup{padding-top:24px;border-top:1px solid var(--line)}.amenity{align-items:flex-start;line-height:1.35}.amenity .icon{width:24px;height:24px;color:var(--ink);margin-top:-2px}
+@media(max-width:600px){.amenityGroups{gap:24px}.amenityGroup h3{font-size:16px;margin-bottom:13px}.amenityGroup+.amenityGroup{padding-top:20px}.amenities{grid-template-columns:1fr}.amenity{font-size:15px;gap:12px}}
