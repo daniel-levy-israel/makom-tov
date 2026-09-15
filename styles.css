@@ -106,3 +106,7 @@ body.headerCompact .compactSearchPill{opacity:1;transform:translate(-50%,0) scal
 .compactFilterBtn b{position:absolute;top:1px;right:0;min-width:18px;height:18px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:10px;line-height:1}
 @media(min-width:601px){.compactSearchPill{top:14px}}
 @media(prefers-reduced-motion:reduce){.compactSearchPill{transition:none}}
+
+/* Persistent mobile map/list switch and map discovery chrome */
+.floatingViewToggle{display:none}
+@media(max-width:600px){.floatingViewToggle{position:fixed;z-index:940;display:flex;align-items:center;gap:8px;bottom:20px;left:50%;transform:translateX(-50%);border:0;border-radius:999px;padding:12px 18px;background:var(--ink);color:#fff;box-shadow:0 6px 20px #0004;font:700 14px var(--font-body)}.floatingViewToggle .icon{width:19px;height:19px}.mapViewActive .compactSearchPill{opacity:1;transform:translate(-50%,0) scale(1);pointer-events:auto}.mapViewActive .homeIntentRows{position:fixed;z-index:930;top:80px;left:0;right:0;background:rgba(255,255,255,.97);box-shadow:0 5px 16px #0001}.mapViewActive .mapStage{margin-top:88px;height:calc(100vh - 150px)}.mapViewActive .mapSheet{max-height:48%;}.mapViewActive .resultsMap{height:54%}.mapViewActive .mapSheet{height:46%}}
