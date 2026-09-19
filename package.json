@@ -1,0 +1,21 @@
+{
+  "name": "makom-tov",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Hebrew RTL discovery app for Israeli vacation rentals",
+  "scripts": {
+    "dev": "vercel dev",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:seed": "node scripts/seed.mjs",
+    "check": "node --check api/properties.js && node --check api/properties/[id].js && node --check lib/catalog.js && node --check scripts/migrate.mjs && node --check scripts/seed.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "vercel": "^37.12.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
