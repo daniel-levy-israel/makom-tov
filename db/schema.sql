@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS properties (
   google_reviews integer,
   maps text,
   website text,
+  instagram_url text,
   book boolean NOT NULL DEFAULT false,
   amenities jsonb NOT NULL DEFAULT '[]'::jsonb,
   description text,
