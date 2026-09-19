@@ -16,7 +16,7 @@ async function convertAndStore(sourceUrl) {
   const source = Buffer.from(await response.arrayBuffer());
   const image = await sharp(source, { failOn: 'none' }).rotate().resize({ width: 720, height: 720, fit: 'inside', withoutEnlargement: true }).webp({ quality: 68 }).toBuffer();
   const filename = crypto.createHash('sha256').update(sourceUrl).digest('hex').slice(0, 32);
-  const blob = await put(`catalog/${filename}.webp`, image, { access: 'public', contentType: 'image/webp', addRandomSuffix: false });
+  const blob = await put(`catalog/${filename}.webp`, image, { access: 'public', contentType: 'image/webp', addRandomSuffix: false, allowOverwrite: true });
   return { url: blob.url, bytes: image.length };
 }
 async function worker(items, db) {
