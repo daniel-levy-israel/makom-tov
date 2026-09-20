@@ -111,3 +111,27 @@ body.headerCompact .compactSearchPill{opacity:1;transform:translate(-50%,0) scal
 .floatingViewToggle{display:none}
 @media(max-width:600px){.floatingViewToggle{position:fixed;z-index:940;display:flex;align-items:center;gap:8px;bottom:20px;left:50%;transform:translateX(-50%);border:0;border-radius:999px;padding:12px 18px;background:var(--ink);color:#fff;box-shadow:0 6px 20px #0004;font:700 14px var(--font-body)}.floatingViewToggle .icon{width:19px;height:19px}.mapViewActive .compactSearchPill{opacity:1;transform:translate(-50%,0) scale(1);pointer-events:auto}.mapViewActive .homeIntentRows{position:fixed;z-index:930;top:80px;left:0;right:0;background:rgba(255,255,255,.97);box-shadow:0 5px 16px #0001}.mapViewActive .mapStage{margin-top:0;height:calc(100vh - 150px)}.mapViewActive .resultsMap{height:100%}.mapViewActive .mapSheet{height:43%;max-height:none;transition:height .32s cubic-bezier(.2,.8,.2,1)}.mapViewActive .mapSheet.expanded{height:82%}.mapViewActive .mapSheet.expanded .sheetHandle{width:48px;background:#aaa}.mapViewActive .mapCards{overscroll-behavior-y:contain}}
 .siteFooter{margin-top:48px;padding:28px 32px;border-top:1px solid var(--border,#e8e3de);display:flex;align-items:center;justify-content:space-between;gap:20px;color:#6b6763;background:#fff}.siteFooter nav{display:flex;gap:20px}.siteFooter a{color:#34312f;text-decoration:none;font-weight:600}.siteFooter a:hover,.siteFooter a:focus{text-decoration:underline}.legalPage{background:#fbfaf8;color:#292725}.legalPage .topbar{background:#fff}.legalContent{width:min(760px,calc(100% - 32px));margin:48px auto 72px;background:#fff;border:1px solid #ece7e2;border-radius:24px;padding:clamp(24px,5vw,56px);box-shadow:0 16px 50px rgba(44,36,31,.06);line-height:1.75}.legalContent h1{font-family:'Suez One',serif;font-size:clamp(2rem,6vw,3.25rem);margin:16px 0 4px;color:#c11246}.legalContent h2{font-size:1.3rem;margin:32px 0 8px}.legalContent p,.legalContent li{font-size:1.04rem}.legalContent li+li{margin-top:8px}.legalUpdated{color:#746e69}.legalBack{color:#c11246;font-weight:700;text-decoration:none}@media(max-width:700px){.siteFooter{padding:24px 20px;align-items:flex-start;flex-direction:column}.legalContent{margin:20px auto 44px;border-radius:18px}}
+
+/* Editorial mobile experiment: reversible typography and browse density. */
+:root{--font-body:'IBM Plex Sans Hebrew','Assistant',Arial,sans-serif;--font-display:'Frank Ruhl Libre','Suez One',serif}
+body,button,input,select{font-family:var(--font-body)}
+.resultsHead h2,.propertyHero h1,.card h3,.relatedCard strong{font-family:var(--font-display);font-weight:700;letter-spacing:-.015em}
+.trustStrip{width:min(760px,calc(100% - 32px));margin:12px auto 0;display:flex;align-items:center;justify-content:center;gap:28px;color:var(--muted);font-size:13px}
+.trustStrip>span{display:flex;align-items:center;gap:7px}.trustStrip .icon{width:17px;height:17px;color:var(--brand)}
+@media(max-width:600px){
+  .trustStrip{margin:4px auto 0;padding:7px 0 10px;justify-content:flex-start;gap:18px;overflow-x:auto;white-space:nowrap;font-size:12px}
+  .categoryRail{justify-content:flex-start;gap:16px;height:66px}
+  .categoryCard{min-width:62px}.categoryCard:nth-child(n+7){display:none}
+  .homeIntentRows{display:none}
+  .resultsHead h2{font-family:var(--font-display);font-size:27px;line-height:1.05}
+  .card h3{font-size:20px;line-height:1.2;margin-top:13px}
+}
+@media(max-width:480px){
+  :root{--page:calc(100% - 32px)}
+  .grid{display:grid;grid-template-columns:1fr;gap:36px;margin:0;padding:0;overflow:visible}
+  .card{min-width:0;width:100%}
+  .card .photo{aspect-ratio:4/3;border-radius:16px}
+  .card h3{white-space:normal}
+  .cardFacts{display:flex}
+  .cardBottom{font-size:14px}
+}
