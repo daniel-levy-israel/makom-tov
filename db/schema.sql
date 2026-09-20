@@ -38,3 +38,17 @@ CREATE INDEX IF NOT EXISTS properties_amenities_gin_idx ON properties USING gin 
 CREATE INDEX IF NOT EXISTS properties_search_idx ON properties USING gin (
   to_tsvector('simple', coalesce(name, '') || ' ' || coalesce(town, '') || ' ' || coalesce(region, '') || ' ' || coalesce(description, ''))
 );
+
+-- Owner-claim verification delivery and audit state.
+ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS verification_destination text;
+ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS verification_last_sent_at timestamptz;
+ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS verification_delivery_status text;
+CREATE TABLE IF NOT EXISTS property_claim_verification_audit (
+  id bigserial PRIMARY KEY,
+  claim_id uuid NOT NULL REFERENCES property_claims(id) ON DELETE CASCADE,
+  event text NOT NULL,
+  detail text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS property_claim_verification_audit_claim_idx
+  ON property_claim_verification_audit (claim_id, created_at DESC);
