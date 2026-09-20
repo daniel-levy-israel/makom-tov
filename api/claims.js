@@ -46,6 +46,12 @@ async function ensureTable(db) {
       property_id integer NOT NULL,
       property_name text NOT NULL,
       property_town text,
+      verification_method text NOT NULL DEFAULT 'manual' CHECK (verification_method IN ('email','phone','manual')),
+      verification_destination_mask text,
+      verification_code_hash text,
+      verification_code_expires_at timestamptz,
+      verification_attempts integer NOT NULL DEFAULT 0,
+      verified_at timestamptz,
       full_name text NOT NULL,
       relationship text NOT NULL CHECK (relationship IN ('owner','manager','marketing','other')),
       phone text,
@@ -58,6 +64,12 @@ async function ensureTable(db) {
     );
     CREATE INDEX IF NOT EXISTS property_claims_status_submitted_idx ON property_claims (status, submitted_at DESC);
     CREATE INDEX IF NOT EXISTS property_claims_property_idx ON property_claims (property_id, submitted_at DESC);
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_method text NOT NULL DEFAULT 'manual';
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_destination_mask text;
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_code_hash text;
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_code_expires_at timestamptz;
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_attempts integer NOT NULL DEFAULT 0;
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verified_at timestamptz;
   `);
 }
 
@@ -86,12 +98,12 @@ module.exports = async function handler(req, res) {
   if (!db) return res.status(503).json({ error: 'claims_unavailable' });
   try {
     await ensureTable(db);
-    const propertyResult = await db.query("SELECT id, name, town FROM properties WHERE id = $1 AND status = 'published' LIMIT 1", [propertyId]);
+    const propertyResult = await db.query("SELECT id, name, town, phone, whatsapp FROM properties WHERE id = $1 AND status = 'published' LIMIT 1", [propertyId]);
     let property = propertyResult.rows[0];
     if (!property) {
       const staticProperty = require('../properties.json').find((item) => Number(item.id) === propertyId);
       if (!staticProperty) return res.status(404).json({ error: 'property_not_found' });
-      property = { id: staticProperty.id, name: staticProperty.name, town: staticProperty.town || '' };
+      property = { id: staticProperty.id, name: staticProperty.name, town: staticProperty.town || '', phone: staticProperty.phone || '', whatsapp: staticProperty.whatsapp || '' };
     }
     const duplicate = await db.query(`
       SELECT reference FROM property_claims
@@ -102,15 +114,21 @@ module.exports = async function handler(req, res) {
     `, [propertyId, phone, email]);
     if (duplicate.rowCount) return res.status(409).json({ error: 'duplicate_claim' });
 
+    // Verification is routed only from contact data already held on the catalog record.
+    // Self-entered contact details above are callback details and never establish ownership.
+    const catalogPhone = clean(property.phone || property.whatsapp, 30);
+    const verificationMethod = catalogPhone ? 'phone' : 'manual';
+    const digits = catalogPhone.replace(/\D/g, '');
+    const destinationMask = verificationMethod === 'phone' && digits.length >= 4 ? `***-${digits.slice(-4)}` : null;
     const id = crypto.randomUUID();
     const reference = `MT-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
     await db.query(`
       INSERT INTO property_claims
-        (id, reference, property_id, property_name, property_town, full_name, relationship, phone, email, note)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
-    `, [id, reference, propertyId, property.name, property.town || '', fullName, relationship, phone || null, email || null, note || null]);
+        (id, reference, property_id, property_name, property_town, verification_method, verification_destination_mask, full_name, relationship, phone, email, note)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+    `, [id, reference, propertyId, property.name, property.town || '', verificationMethod, destinationMask, fullName, relationship, phone || null, email || null, note || null]);
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(201).json({ reference, status: 'pending' });
+    return res.status(201).json({ reference, status: 'pending', verification: { method: verificationMethod, destinationMask, delivery: verificationMethod === 'phone' ? 'pending' : 'manual_review' } });
   } catch (error) {
     console.error('claim_submission_failed', error);
     return res.status(500).json({ error: 'claim_submission_failed' });
