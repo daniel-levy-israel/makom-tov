@@ -40,6 +40,33 @@ CREATE INDEX IF NOT EXISTS properties_search_idx ON properties USING gin (
 );
 
 -- Owner-claim verification delivery and audit state.
+CREATE TABLE IF NOT EXISTS property_claims (
+  id uuid PRIMARY KEY,
+  reference text UNIQUE NOT NULL,
+  property_id integer NOT NULL,
+  property_name text NOT NULL,
+  property_town text,
+  verification_method text NOT NULL DEFAULT 'manual' CHECK (verification_method IN ('email','phone','manual')),
+  verification_destination_mask text,
+  verification_destination text,
+  verification_last_sent_at timestamptz,
+  verification_delivery_status text,
+  verification_code_hash text,
+  verification_code_expires_at timestamptz,
+  verification_attempts integer NOT NULL DEFAULT 0,
+  verified_at timestamptz,
+  full_name text NOT NULL,
+  relationship text NOT NULL CHECK (relationship IN ('owner','manager','marketing','other')),
+  phone text,
+  email text,
+  note text,
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewing','approved','rejected')),
+  submitted_at timestamptz NOT NULL DEFAULT now(),
+  reviewed_at timestamptz,
+  review_note text
+);
+CREATE INDEX IF NOT EXISTS property_claims_status_submitted_idx ON property_claims (status, submitted_at DESC);
+CREATE INDEX IF NOT EXISTS property_claims_property_idx ON property_claims (property_id, submitted_at DESC);
 ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS verification_destination text;
 ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS verification_last_sent_at timestamptz;
 ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS verification_delivery_status text;
