@@ -30,8 +30,14 @@ module.exports = async function handler(req, res) {
     const db = getPool();
     let rows;
     if (db) {
-      const result = await db.query(`SELECT id,name,town,region,category,phone,whatsapp,owner_email FROM properties WHERE status='published' AND (name ILIKE $1 OR town ILIKE $1 OR region ILIKE $1) ORDER BY featured DESC,id ASC LIMIT 12`, [`%${q}%`]);
-      rows = result.rows;
+      try {
+        const result = await db.query(`SELECT id,name,town,region,category,phone,whatsapp,owner_email FROM properties WHERE status='published' AND (name ILIKE $1 OR town ILIKE $1 OR region ILIKE $1) ORDER BY featured DESC,id ASC LIMIT 12`, [`%${q}%`]);
+        rows = result.rows;
+      } catch (error) {
+        if (error.code !== '42703') throw error;
+        const result = await db.query(`SELECT id,name,town,region,category,phone,whatsapp FROM properties WHERE status='published' AND (name ILIKE $1 OR town ILIKE $1 OR region ILIKE $1) ORDER BY featured DESC,id ASC LIMIT 12`, [`%${q}%`]);
+        rows = result.rows;
+      }
       if (!rows.length) rows = require('../properties.json').filter((p) => [p.name,p.town,p.region].some((v) => String(v || '').toLocaleLowerCase('he').includes(q))).slice(0,12);
     } else {
       rows = require('../properties.json').filter((p) => [p.name,p.town,p.region].some((v) => String(v || '').toLocaleLowerCase('he').includes(q))).slice(0,12);
