@@ -98,12 +98,12 @@ module.exports = async function handler(req, res) {
   if (!db) return res.status(503).json({ error: 'claims_unavailable' });
   try {
     await ensureTable(db);
-    const propertyResult = await db.query("SELECT id, name, town, phone, whatsapp FROM properties WHERE id = $1 AND status = 'published' LIMIT 1", [propertyId]);
+    const propertyResult = await db.query("SELECT id, name, town, phone, whatsapp, owner_email FROM properties WHERE id = $1 AND status = 'published' LIMIT 1", [propertyId]);
     let property = propertyResult.rows[0];
     if (!property) {
       const staticProperty = require('../properties.json').find((item) => Number(item.id) === propertyId);
       if (!staticProperty) return res.status(404).json({ error: 'property_not_found' });
-      property = { id: staticProperty.id, name: staticProperty.name, town: staticProperty.town || '', phone: staticProperty.phone || '', whatsapp: staticProperty.whatsapp || '' };
+      property = { id: staticProperty.id, name: staticProperty.name, town: staticProperty.town || '', phone: staticProperty.phone || '', whatsapp: staticProperty.whatsapp || '', owner_email: staticProperty.email || '' };
     }
     const duplicate = await db.query(`
       SELECT reference FROM property_claims
@@ -116,10 +116,11 @@ module.exports = async function handler(req, res) {
 
     // Verification is routed only from contact data already held on the catalog record.
     // Self-entered contact details above are callback details and never establish ownership.
+    const catalogEmail = clean(property.owner_email, 160).toLowerCase();
     const catalogPhone = clean(property.phone || property.whatsapp, 30);
-    const verificationMethod = catalogPhone ? 'phone' : 'manual';
+    const verificationMethod = catalogEmail ? 'email' : catalogPhone ? 'phone' : 'manual';
     const digits = catalogPhone.replace(/\D/g, '');
-    const destinationMask = verificationMethod === 'phone' && digits.length >= 4 ? `***-${digits.slice(-4)}` : null;
+    const destinationMask = verificationMethod === 'email' ? catalogEmail.replace(/^(.{1,2}).*(@.*)$/, '$1***$2') : verificationMethod === 'phone' && digits.length >= 4 ? `***-${digits.slice(-4)}` : null;
     const id = crypto.randomUUID();
     const reference = `MT-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
     await db.query(`
