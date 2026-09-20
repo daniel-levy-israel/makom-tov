@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS properties (
   images jsonb NOT NULL DEFAULT '[]'::jsonb,
   phone text,
   whatsapp text,
+  owner_email text,
   status text NOT NULL DEFAULT 'published' CHECK (status IN ('draft', 'published', 'archived')),
   featured boolean NOT NULL DEFAULT false,
   source_updated_at timestamptz,
