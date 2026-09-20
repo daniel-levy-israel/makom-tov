@@ -1,8 +1,41 @@
 {
   "headers": [
-    {"source": "/properties.json", "headers": [{"key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400"}]},
-    {"source": "/api/(.*)", "headers": [{"key": "X-Content-Type-Options", "value": "nosniff"}]},
-    {"source": "/(.*)", "headers": [{"key": "X-Content-Type-Options", "value": "nosniff"}]}
+    {
+      "source": "/properties.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
   ],
-  "rewrites": [{"source": "/property/:id", "destination": "/index.html"}]
+  "rewrites": [
+    {
+      "source": "/owners",
+      "destination": "/owner.html"
+    },
+    {
+      "source": "/property/:id",
+      "destination": "/index.html"
+    }
+  ]
 }
