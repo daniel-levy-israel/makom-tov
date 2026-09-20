@@ -103,7 +103,7 @@ module.exports = async function handler(req, res) {
     if (!property) {
       const staticProperty = require('../properties.json').find((item) => Number(item.id) === propertyId);
       if (!staticProperty) return res.status(404).json({ error: 'property_not_found' });
-      property = { id: staticProperty.id, name: staticProperty.name, town: staticProperty.town || '', phone: staticProperty.phone || '', whatsapp: staticProperty.whatsapp || '', owner_email: staticProperty.email || '' };
+      property = { id: staticProperty.id, name: staticProperty.name, town: staticProperty.town || '', phone: staticProperty.phone || '', whatsapp: staticProperty.whatsapp || '', owner_email: staticProperty.email || require('../owner-emails.json')[String(propertyId)] || '' };
     }
     const duplicate = await db.query(`
       SELECT reference FROM property_claims
