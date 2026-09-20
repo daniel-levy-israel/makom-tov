@@ -31,6 +31,7 @@ module.exports = async function handler(req, res) {
     if (db) {
       const result = await db.query(`SELECT id,name,town,region,category,phone,whatsapp FROM properties WHERE status='published' AND (name ILIKE $1 OR town ILIKE $1 OR region ILIKE $1) ORDER BY featured DESC,id ASC LIMIT 12`, [`%${q}%`]);
       rows = result.rows;
+      if (!rows.length) rows = require('../properties.json').filter((p) => [p.name,p.town,p.region].some((v) => String(v || '').toLocaleLowerCase('he').includes(q))).slice(0,12);
     } else {
       rows = require('../properties.json').filter((p) => [p.name,p.town,p.region].some((v) => String(v || '').toLocaleLowerCase('he').includes(q))).slice(0,12);
     }
