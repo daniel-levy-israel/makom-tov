@@ -14,7 +14,8 @@ function item(row) {
   const storedPhone = row.phone || row.whatsapp || '';
   const phoneMask = maskPhone(storedPhone);
   // Email is intentionally future-ready. The current catalog schema contains no owner email field.
-  const emailMask = row.owner_email_mask || '';
+  const rawEmail = row.owner_email || row.email || '';
+  const emailMask = rawEmail ? rawEmail.replace(/^(.{1,2}).*(@.*)$/, '$1***$2') : '';
   const method = emailMask ? 'email' : phoneMask ? 'phone' : 'manual';
   return {
     id: Number(row.id), name: row.name, town: row.town || '', region: row.region || '', category: row.category || '',
@@ -29,7 +30,7 @@ module.exports = async function handler(req, res) {
     const db = getPool();
     let rows;
     if (db) {
-      const result = await db.query(`SELECT id,name,town,region,category,phone,whatsapp FROM properties WHERE status='published' AND (name ILIKE $1 OR town ILIKE $1 OR region ILIKE $1) ORDER BY featured DESC,id ASC LIMIT 12`, [`%${q}%`]);
+      const result = await db.query(`SELECT id,name,town,region,category,phone,whatsapp,owner_email FROM properties WHERE status='published' AND (name ILIKE $1 OR town ILIKE $1 OR region ILIKE $1) ORDER BY featured DESC,id ASC LIMIT 12`, [`%${q}%`]);
       rows = result.rows;
       if (!rows.length) rows = require('../properties.json').filter((p) => [p.name,p.town,p.region].some((v) => String(v || '').toLocaleLowerCase('he').includes(q))).slice(0,12);
     } else {
