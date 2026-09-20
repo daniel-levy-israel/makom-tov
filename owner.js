@@ -18,6 +18,12 @@
     return [property.town, property.region, property.category].filter(Boolean).join(' · ') || 'מקום אירוח';
   }
 
+  function verificationText(verification) {
+    if (verification?.method === 'email') return `אימות במייל ${verification.emailMask}`;
+    if (verification?.method === 'phone') return `אימות בטלפון ${verification.phoneMask}`;
+    return 'אין פרטי קשר שמורים - בדיקה ידנית';
+  }
+
   function chooseProperty(property) {
     selected = property;
     document.querySelector('#claimPropertyId').value = property.id;
@@ -27,7 +33,10 @@
     const meta = document.createElement('span');
     strong.textContent = property.name;
     meta.textContent = propertyMeta(property);
-    box.append(strong, meta);
+    const verification = document.createElement('span');
+    verification.className = `verificationBadge ${property.verification.method}`;
+    verification.textContent = verificationText(property.verification);
+    box.append(strong, meta, verification);
     searchPanel.hidden = true;
     claimPanel.hidden = false;
     window.scrollTo({ top: claimPanel.offsetTop - 24, behavior: 'smooth' });
@@ -43,14 +52,14 @@
     results.replaceChildren();
     setStatus(status, 'מחפשים במאגר...');
     try {
-      const response = await fetch(`/api/properties?q=${encodeURIComponent(q)}&limit=12`);
+      const response = await fetch(`/api/owner-properties?q=${encodeURIComponent(q)}`);
       if (!response.ok) throw new Error('search_failed');
       const data = await response.json();
       if (!data.items.length) {
         setStatus(status, 'לא מצאנו מקום בשם הזה. נסו שם קצר יותר או חפשו לפי יישוב.');
         return;
       }
-      setStatus(status, `נמצאו ${data.total} מקומות. מוצגות התוצאות המתאימות הראשונות.`);
+      setStatus(status, `נמצאו ${data.items.length} תוצאות מתאימות.`);
       data.items.forEach((property) => {
         const button = document.createElement('button');
         button.type = 'button';
@@ -63,8 +72,11 @@
         choose.className = 'chooseLabel';
         name.textContent = property.name;
         meta.textContent = propertyMeta(property);
+        const verification = document.createElement('small');
+        verification.className = `verificationBadge ${property.verification.method}`;
+        verification.textContent = verificationText(property.verification);
         choose.textContent = 'זה המקום שלי';
-        text.append(name, meta);
+        text.append(name, meta, verification);
         button.append(text, choose);
         button.addEventListener('click', () => chooseProperty(property));
         results.append(button);
