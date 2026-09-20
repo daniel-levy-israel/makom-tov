@@ -102,6 +102,10 @@
       if (!response.ok) throw new Error(result.error || 'submit_failed');
       claimPanel.hidden = true;
       successPanel.hidden = false;
+      const route = result.verification?.method === 'phone'
+        ? `נמצא במאגר מספר עסקי המסתיים ב-${result.verification.destinationMask}. לאחר חיבור שירות ההודעות יישלח אליו קוד אימות. לא ניתנה גישת עריכה.`
+        : 'לא נמצא במאגר אמצעי קשר מתאים. הבקשה הועברה לבדיקה ידנית ולא ניתנה גישת עריכה.';
+      document.querySelector('#verificationRoute').textContent = route;
       document.querySelector('#claimReference').textContent = `מספר בקשה: ${result.reference}`;
       successPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (error) {
