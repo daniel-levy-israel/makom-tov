@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>בעלי מקומות אירוח | מקום טוב</title>
+  <meta name="description" content="מצאו את מקום האירוח שלכם ושלחו בקשה לאימות בעלות במערכת מקום טוב.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/owner.css">
+</head>
+<body class="ownerPage">
+  <header class="topbar ownerTopbar">
+    <a class="brand" href="/" aria-label="מקום טוב - דף הבית"><span class="brandMark">מ</span><span>מקום טוב</span></a>
+    <a class="backLink" href="/">חזרה לאתר</a>
+  </header>
+
+  <main>
+    <section class="ownerHero">
+      <div class="ownerHeroText">
+        <p class="eyebrow">לבעלי מקומות אירוח</p>
+        <h1>המקום שלכם כבר כאן.<br>בואו נחבר אותו אליכם.</h1>
+        <p>חפשו את מקום האירוח, בחרו אותו ושלחו בקשה קצרה לאימות. לאחר בדיקה נחזור אליכם. בשלב הזה לא נפתחת גישה לעריכת העמוד.</p>
+      </div>
+      <ol class="ownerSteps" aria-label="שלבי התהליך">
+        <li><span>1</span><div><strong>מוצאים את המקום</strong><small>מחפשים לפי שם או יישוב</small></div></li>
+        <li><span>2</span><div><strong>שולחים פרטים</strong><small>פרטי קשר והקשר למקום</small></div></li>
+        <li><span>3</span><div><strong>אנחנו בודקים</strong><small>גישה תינתן רק לאחר אימות</small></div></li>
+      </ol>
+    </section>
+
+    <section class="ownerFlow" aria-labelledby="searchTitle">
+      <div id="searchPanel" class="flowPanel">
+        <p class="stepLabel">שלב 1 מתוך 2</p>
+        <h2 id="searchTitle">מצאו את מקום האירוח שלכם</h2>
+        <p class="panelIntro">אפשר לחפש לפי שם המקום או היישוב.</p>
+        <form id="ownerSearchForm" class="ownerSearch" role="search">
+          <label for="ownerSearchInput">שם מקום או יישוב</label>
+          <div class="searchControl">
+            <input id="ownerSearchInput" name="q" type="search" minlength="2" maxlength="100" autocomplete="off" placeholder="לדוגמה: אחוזת הגליל" required>
+            <button class="ownerPrimary" type="submit">חיפוש</button>
+          </div>
+        </form>
+        <div id="searchStatus" class="statusText" role="status" aria-live="polite"></div>
+        <div id="ownerResults" class="ownerResults" aria-live="polite"></div>
+      </div>
+
+      <div id="claimPanel" class="flowPanel" hidden>
+        <button id="changeProperty" class="textButton" type="button">בחירת מקום אחר</button>
+        <p class="stepLabel">שלב 2 מתוך 2</p>
+        <h2>בקשת אימות</h2>
+        <div id="selectedProperty" class="selectedProperty"></div>
+        <form id="claimForm" class="claimForm">
+          <input id="claimPropertyId" name="propertyId" type="hidden">
+          <div class="formField">
+            <label for="claimName">שם מלא</label>
+            <input id="claimName" name="fullName" type="text" maxlength="100" autocomplete="name" required>
+          </div>
+          <div class="formField">
+            <label for="claimRole">מה הקשר שלכם למקום?</label>
+            <select id="claimRole" name="relationship" required>
+              <option value="">בחרו</option>
+              <option value="owner">בעלים</option>
+              <option value="manager">מנהל/ת המקום</option>
+              <option value="marketing">שיווק או ניהול דיגיטלי</option>
+              <option value="other">אחר</option>
+            </select>
+          </div>
+          <div class="formGrid">
+            <div class="formField">
+              <label for="claimPhone">טלפון</label>
+              <input id="claimPhone" name="phone" type="tel" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="050-0000000">
+            </div>
+            <div class="formField">
+              <label for="claimEmail">אימייל</label>
+              <input id="claimEmail" name="email" type="email" maxlength="160" autocomplete="email" inputmode="email" placeholder="name@example.com">
+            </div>
+          </div>
+          <p class="fieldHint">צריך למלא לפחות טלפון או אימייל.</p>
+          <div class="formField">
+            <label for="claimNote">משהו שיכול לעזור לנו לאמת? <span>(לא חובה)</span></label>
+            <textarea id="claimNote" name="note" maxlength="600" rows="3" placeholder="למשל: התפקיד שלכם או דרך נוספת לזהות אתכם"></textarea>
+          </div>
+          <div class="botField" aria-hidden="true"><label for="claimWebsite">אתר</label><input id="claimWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <label class="consentField"><input name="consent" type="checkbox" required><span>אני מאשר/ת למקום טוב להשתמש בפרטים שמסרתי כדי לבדוק את הבקשה וליצור איתי קשר, בהתאם ל<a href="/privacy.html" target="_blank">מדיניות הפרטיות</a>.</span></label>
+          <button id="claimSubmit" class="ownerPrimary ownerSubmit" type="submit">שליחת בקשה לבדיקה</button>
+          <div id="claimStatus" class="statusText" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div id="successPanel" class="flowPanel successPanel" hidden>
+        <div class="successMark" aria-hidden="true">✓</div>
+        <p class="stepLabel">הבקשה התקבלה</p>
+        <h2>תודה, מכאן אנחנו בודקים.</h2>
+        <p>הבקשה נשמרה וממתינה לבדיקה. ניצור קשר בפרטים שמסרתם. עד לסיום האימות לא נפתחת גישה לעריכת עמוד המקום.</p>
+        <p id="claimReference" class="claimReference"></p>
+        <a class="ownerPrimary successLink" href="/">חזרה למקום טוב</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ownerFooter"><span>© מקום טוב</span><nav><a href="/privacy.html">פרטיות</a><a href="/terms.html">תנאי שימוש</a></nav></footer>
+  <script src="/owner.js" defer></script>
+</body>
+</html>
