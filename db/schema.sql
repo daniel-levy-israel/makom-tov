@@ -52,3 +52,24 @@ CREATE TABLE IF NOT EXISTS property_claim_verification_audit (
 );
 CREATE INDEX IF NOT EXISTS property_claim_verification_audit_claim_idx
   ON property_claim_verification_audit (claim_id, created_at DESC);
+
+-- Licensed owner-supplied photos. Binary storage is intentionally separate from the catalog JSON;
+-- every row retains who uploaded it and the exact rights grant they accepted.
+CREATE TABLE IF NOT EXISTS property_owner_photos (
+  id uuid PRIMARY KEY,
+  property_id integer NOT NULL,
+  claim_id uuid NOT NULL REFERENCES property_claims(id) ON DELETE RESTRICT,
+  mime_type text NOT NULL CHECK (mime_type IN ('image/jpeg','image/png','image/webp')),
+  byte_size integer NOT NULL CHECK (byte_size > 0 AND byte_size <= 2500000),
+  content bytea NOT NULL,
+  alt_text text,
+  uploader_name text NOT NULL,
+  uploader_relationship text NOT NULL,
+  rights_grant_version text NOT NULL,
+  source_type text NOT NULL DEFAULT 'owner_upload' CHECK (source_type = 'owner_upload'),
+  uploaded_at timestamptz NOT NULL DEFAULT now(),
+  removed_at timestamptz
+);
+CREATE INDEX IF NOT EXISTS property_owner_photos_property_idx ON property_owner_photos(property_id, uploaded_at) WHERE removed_at IS NULL;
+ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS owner_access_token_hash text;
+ALTER TABLE IF EXISTS property_claims ADD COLUMN IF NOT EXISTS owner_access_granted_at timestamptz;
