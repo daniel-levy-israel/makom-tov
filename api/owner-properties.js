@@ -10,12 +10,11 @@ function maskPhone(value) {
   const digits = clean(value, 30).replace(/\D/g, '');
   return digits.length >= 4 ? `***-${digits.slice(-4)}` : '';
 }
-const ownerEmails = Object.fromEntries(require('../owner-emails.json').map((entry) => [String(entry.id), entry.email]));
 function item(row) {
   const storedPhone = row.phone || row.whatsapp || '';
   const phoneMask = maskPhone(storedPhone);
   // Email is intentionally future-ready. The current catalog schema contains no owner email field.
-  const rawEmail = row.owner_email || row.email || ownerEmails[String(row.id)] || '';
+  const rawEmail = row.owner_email || row.email || '';
   const emailMask = rawEmail ? rawEmail.replace(/^(.{1,2}).*(@.*)$/, '$1***$2') : '';
   const method = emailMask ? 'email' : phoneMask ? 'phone' : 'manual';
   return {
