@@ -48,6 +48,9 @@ async function ensureTable(db) {
       property_town text,
       verification_method text NOT NULL DEFAULT 'manual' CHECK (verification_method IN ('email','phone','manual')),
       verification_destination_mask text,
+      verification_destination text,
+      verification_last_sent_at timestamptz,
+      verification_delivery_status text,
       verification_code_hash text,
       verification_code_expires_at timestamptz,
       verification_attempts integer NOT NULL DEFAULT 0,
@@ -66,10 +69,18 @@ async function ensureTable(db) {
     CREATE INDEX IF NOT EXISTS property_claims_property_idx ON property_claims (property_id, submitted_at DESC);
     ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_method text NOT NULL DEFAULT 'manual';
     ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_destination_mask text;
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_destination text;
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_last_sent_at timestamptz;
+    ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_delivery_status text;
     ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_code_hash text;
     ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_code_expires_at timestamptz;
     ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verification_attempts integer NOT NULL DEFAULT 0;
     ALTER TABLE property_claims ADD COLUMN IF NOT EXISTS verified_at timestamptz;
+    CREATE TABLE IF NOT EXISTS property_claim_verification_audit (
+      id bigserial PRIMARY KEY, claim_id uuid NOT NULL REFERENCES property_claims(id) ON DELETE CASCADE,
+      event text NOT NULL, detail text, created_at timestamptz NOT NULL DEFAULT now()
+    );
+    CREATE INDEX IF NOT EXISTS property_claim_verification_audit_claim_idx ON property_claim_verification_audit(claim_id, created_at DESC);
   `);
 }
 
@@ -123,13 +134,28 @@ module.exports = async function handler(req, res) {
     const destinationMask = verificationMethod === 'email' ? catalogEmail.replace(/^(.{1,2}).*(@.*)$/, '$1***$2') : verificationMethod === 'phone' && digits.length >= 4 ? `***-${digits.slice(-4)}` : null;
     const id = crypto.randomUUID();
     const reference = `MT-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
+    const destination = verificationMethod === 'email' ? catalogEmail : verificationMethod === 'phone' ? catalogPhone : null;
     await db.query(`
       INSERT INTO property_claims
-        (id, reference, property_id, property_name, property_town, verification_method, verification_destination_mask, full_name, relationship, phone, email, note)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-    `, [id, reference, propertyId, property.name, property.town || '', verificationMethod, destinationMask, fullName, relationship, phone || null, email || null, note || null]);
+        (id, reference, property_id, property_name, property_town, verification_method, verification_destination_mask, verification_destination, full_name, relationship, phone, email, note)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+    `, [id, reference, propertyId, property.name, property.town || '', verificationMethod, destinationMask, destination, fullName, relationship, phone || null, email || null, note || null]);
+    let delivery = verificationMethod === 'phone' ? 'unavailable' : 'manual_review';
+    if (verificationMethod === 'phone') {
+      try {
+        const otp019 = require('../lib/otp019');
+        await otp019.sendOtp(catalogPhone);
+        await db.query(`UPDATE property_claims SET verification_last_sent_at=now(), verification_code_expires_at=now()+interval '5 minutes', verification_delivery_status='sent' WHERE id=$1`, [id]);
+        await db.query(`INSERT INTO property_claim_verification_audit(claim_id,event,detail) VALUES($1,'sent','sms019')`, [id]);
+        delivery = 'sent';
+      } catch (error) {
+        await db.query(`UPDATE property_claims SET verification_delivery_status=$2 WHERE id=$1`, [id, error.code || 'delivery_failed']);
+        await db.query(`INSERT INTO property_claim_verification_audit(claim_id,event,detail) VALUES($1,'send_failed',$2)`, [id, error.code || 'provider_error']);
+        console.error('claim_sms_delivery_failed', { reference, code: error.code || 'provider_error' });
+      }
+    }
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(201).json({ reference, status: 'pending', verification: { method: verificationMethod, destinationMask, delivery: verificationMethod === 'phone' ? 'pending' : 'manual_review' } });
+    return res.status(201).json({ reference, status: 'pending', verification: { method: verificationMethod, destinationMask, delivery } });
   } catch (error) {
     console.error('claim_submission_failed', error);
     return res.status(500).json({ error: 'claim_submission_failed' });
