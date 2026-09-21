@@ -11,15 +11,15 @@ try {
     try {
       for (const p of rows.slice(start, start + 100)) {
         await client.query(`INSERT INTO properties
-          (id,name,town,region,category,price_min,price_max,units,guests,lat,lng,google_rating,google_reviews,maps,website,instagram_url,book,amenities,description,images,phone,whatsapp,owner_email,source_updated_at)
-          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18::jsonb,$19,$20::jsonb,$21,$22,$23,now())
+          (id,name,town,region,category,price_min,price_max,units,guests,lat,lng,google_rating,google_reviews,maps,website,instagram_url,book,amenities,description,phone,whatsapp,owner_email,source_updated_at)
+          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18::jsonb,$19,$20,$21,$22,now())
           ON CONFLICT (id) DO UPDATE SET name=excluded.name,town=excluded.town,region=excluded.region,category=excluded.category,
           price_min=excluded.price_min,price_max=excluded.price_max,units=excluded.units,guests=excluded.guests,
           lat=excluded.lat,lng=excluded.lng,google_rating=excluded.google_rating,google_reviews=excluded.google_reviews,
           maps=excluded.maps,website=excluded.website,instagram_url=excluded.instagram_url,book=excluded.book,amenities=excluded.amenities,
-          description=excluded.description,images=excluded.images,phone=excluded.phone,whatsapp=excluded.whatsapp,owner_email=excluded.owner_email,
+          description=excluded.description,phone=excluded.phone,whatsapp=excluded.whatsapp,owner_email=excluded.owner_email,
           source_updated_at=now(),updated_at=now()`,
-          [p.id,p.name,p.town,p.region,p.category,p.priceMin,p.priceMax,p.units,p.guests,p.lat,p.lng,p.googleRating,p.googleReviews,p.maps,p.website,p.instagram || instagram[p.id] || null,p.book,JSON.stringify(p.amenities||[]),p.desc,JSON.stringify(p.images||[]),p.phone,p.whatsapp,p.email]);
+          [p.id,p.name,p.town,p.region,p.category,p.priceMin,p.priceMax,p.units,p.guests,p.lat,p.lng,p.googleRating,p.googleReviews,p.maps,p.website,p.instagram || instagram[p.id] || null,p.book,JSON.stringify(p.amenities||[]),p.desc,p.phone,p.whatsapp,p.email]);
       }
       await client.query('COMMIT');
       console.log(`Imported ${Math.min(start + 100, rows.length)} / ${rows.length}`);

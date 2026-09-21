@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS properties (
   book boolean NOT NULL DEFAULT false,
   amenities jsonb NOT NULL DEFAULT '[]'::jsonb,
   description text,
-  images jsonb NOT NULL DEFAULT '[]'::jsonb,
   phone text,
   whatsapp text,
   owner_email text,

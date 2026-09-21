@@ -22,11 +22,11 @@ DATABASE_URL='postgresql://…' npm run db:seed
 
 `db/schema.sql` is idempotent. The importer upserts in transactions of 100 records, so it can safely be rerun when the catalogue changes.
 
-No image is copied or proxied by this work. Existing third-party image URLs are preserved pending the product decision on owner consent and replacement images.
+The legacy catalog image field and all imported third-party image URLs have been removed. Run `db/remove_legacy_competitor_images.sql` once against an existing database before activation. New environments never create or seed that field.
 
 ## Licensed photo sources
 
-The catalog intentionally does not expose the preserved legacy/hotlinked image URLs. Public images come from two licensed routes:
+The catalog contains no legacy/hotlinked image URLs. Public images come from two licensed routes:
 
 1. `property_owner_photos`: approved owners upload JPEG/PNG/WebP images after claim approval. Each row records the claim, uploader, relationship, rights-grant version, timestamp and source type.
 2. Google Places fallback: when a property has no owner photo and `GOOGLE_MAPS_API_KEY` is configured, `/api/google-place-photo?id=...` performs a strict name + town match and returns an on-demand, signed, no-store photo URL with the individual Google Maps source link and author attribution.
