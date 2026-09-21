@@ -34,6 +34,10 @@
       "destination": "/owner.html"
     },
     {
+      "source": "/owners/photos",
+      "destination": "/owner-photos.html"
+    },
+    {
       "source": "/property/:id",
       "destination": "/index.html"
     }
