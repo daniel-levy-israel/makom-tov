@@ -171,3 +171,29 @@ body,button,input,select{font-family:var(--font-body)}
   .categoryCard.active{border-color:#fff!important;background:#fff!important;transform:translateY(-2px);box-shadow:0 3px 2.5px rgba(0,0,0,.12),0 1px 1px rgba(0,0,0,.18),0 .8px .4px rgba(0,0,0,.18),inset 0 1px 1.5px #fff,inset 0 -1.5px .8px rgba(0,0,0,.08)}
   .categoryCard.active::before{content:"";position:absolute;left:14px;right:14px;bottom:-7px;height:2px;background:var(--ink);border-radius:2px}
 }
+
+/* Airbnb selector refinement: inactive tabs stay plain; only the selected tab becomes a card. */
+.categorySection{border-bottom:0}
+.categoryRail{border-bottom:0}
+@media(max-width:600px){
+  .categorySection{background:var(--bg)}
+  .categoryRail{padding-block:14px 22px}
+  .categoryCard,.categoryCard:nth-child(n){
+    height:44px;
+    padding:10px 12px;
+    border:1px solid transparent!important;
+    border-radius:14px;
+    background:transparent!important;
+    box-shadow:none;
+    color:var(--muted);
+  }
+  .categoryCard:hover,.categoryCard:focus-visible{background:var(--surface)!important;color:var(--ink)}
+  .categoryCard.active{
+    border-color:#dedbd5!important;
+    background:#fff!important;
+    color:var(--ink)!important;
+    transform:translateY(-3px);
+    box-shadow:0 6px 16px rgba(0,0,0,.14),0 2px 4px rgba(0,0,0,.10);
+  }
+  .categoryCard.active::before{left:12px;right:12px;bottom:-7px}
+}
