@@ -40,6 +40,18 @@
     {
       "source": "/property/:id",
       "destination": "/index.html"
+    },
+    {
+      "source": "/stays/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/locations/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/events/:slug",
+      "destination": "/index.html"
     }
   ]
 }
