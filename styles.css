@@ -142,3 +142,32 @@ body,button,input,select{font-family:var(--font-body)}
 .categoryFilterChips{display:flex;align-items:center;gap:9px;overflow-x:auto;scrollbar-width:none;padding:2px}.categoryFilterChips::-webkit-scrollbar{display:none}.categoryFacet{border:1px solid var(--line);border-radius:999px;background:#fff;padding:9px 15px;white-space:nowrap;color:var(--ink);font:600 13px var(--font-body);transition:.18s}.categoryFacet:hover{border-color:#b8afa8}.categoryFacet.active{background:var(--ink);border-color:var(--ink);color:#fff}.categoryFacet.moreFacet{display:flex;align-items:center;gap:6px;background:#faf8f6}.categoryFacet.moreFacet .icon{width:16px;height:16px}
 .demoGoogleCredit{position:absolute;z-index:3;right:10px;bottom:10px;background:rgba(255,255,255,.94);color:#24211f;border-radius:6px;padding:5px 8px;font:500 10px/1.2 Roboto,Arial,sans-serif;text-decoration:none;box-shadow:0 1px 5px #0002}.demoGoogleCredit b{font-weight:600}
 @media(max-width:600px){.categoryFilters{display:block;padding:10px 16px 13px;min-height:0}.categoryFiltersHead{min-width:0;margin-bottom:9px}.categoryFiltersHead small{display:none}.categoryFiltersHead strong{font-size:14px}.categoryFilterChips{margin-inline:-16px;padding-inline:16px}.categoryFacet{padding:8px 13px;font-size:12px}.categoryRail{height:74px}.categoryCard:nth-child(n+7){display:flex}.demoGoogleCredit{right:9px;bottom:9px}}
+
+/* Airbnb category pattern - measured live 2026-09-22 and mapped to our tokens.
+   Desktop: 36px icon, 14/18 medium label, 8-16px label gap, 12px bottom
+   space, transparent tabs and a 2px active underline.
+   Mobile: 40px pill, 10px 14px padding, 4px icon gap, 8px rail gap,
+   24px edge/scroll padding, 16px top + 24px bottom rail padding. */
+.categorySection{background:var(--bg);border-bottom:1px solid var(--line);overflow:hidden}
+.categoryRail{width:var(--page);height:auto;min-height:80px;margin:auto;padding:4px 0 12px;display:flex;justify-content:center;align-items:flex-start;gap:36px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;scroll-padding-inline:24px}
+.categoryRail::-webkit-scrollbar{display:none}
+.categoryCard{position:relative;flex:0 0 auto;min-width:auto;height:64px;margin:0;padding:10px 4px 12px;border:0!important;border-radius:0;background:transparent!important;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--muted);font:500 14px/18px var(--font-body);scroll-snap-align:center;transition:color .18s ease,transform .18s ease}
+.categoryCard .icon{width:36px;height:36px;color:var(--icon-color,currentColor);transition:transform .18s ease}
+.categoryCard strong{font:500 14px/18px var(--font-body);white-space:nowrap}
+.categoryCard::after{content:"";position:absolute;left:4px;right:4px;bottom:0;height:2px;background:var(--ink);transform:scaleX(0);transform-origin:center;border-radius:2px;transition:transform .18s ease}
+.categoryCard:hover,.categoryCard:focus-visible{color:var(--ink)}
+.categoryCard.active{color:var(--ink)!important;transform:translateY(-2px)}
+.categoryCard.active .icon{transform:translateY(-1px)}
+.categoryCard.active::after{transform:scaleX(1)}
+.categoryCard:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+@media(max-width:600px){
+  .categorySection{background:linear-gradient(180deg,#f7f5f2 0%,#fff 100%)}
+  .categoryRail{direction:rtl;width:100%;min-height:80px;justify-content:flex-start;gap:8px;padding:16px 24px 24px;scroll-padding-inline:24px}
+  .categoryRail::after{content:"";display:block;flex:0 0 16px}
+  .categoryCard,.categoryCard:nth-child(n){display:flex;min-width:auto;height:40px;margin:0;padding:10px 14px;border:1px solid rgba(255,255,255,.5)!important;border-radius:40px;background:rgba(255,255,255,.76)!important;gap:4px;color:var(--ink);box-shadow:0 3px 2.5px rgba(0,0,0,.10),0 1px 1px rgba(0,0,0,.15),0 .8px .4px rgba(0,0,0,.15),inset 0 1px 1.5px #fff,inset 0 -1.5px .8px rgba(255,255,255,.6);scroll-snap-align:start;transform:none}
+  .categoryCard .icon{width:20px;height:20px}
+  .categoryCard strong{font:500 14px/18px var(--font-body)}
+  .categoryCard::after{display:none}
+  .categoryCard.active{border-color:#fff!important;background:#fff!important;transform:translateY(-2px);box-shadow:0 3px 2.5px rgba(0,0,0,.12),0 1px 1px rgba(0,0,0,.18),0 .8px .4px rgba(0,0,0,.18),inset 0 1px 1.5px #fff,inset 0 -1.5px .8px rgba(0,0,0,.08)}
+  .categoryCard.active::before{content:"";position:absolute;left:14px;right:14px;bottom:-7px;height:2px;background:var(--ink);border-radius:2px}
+}
