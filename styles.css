@@ -222,3 +222,4 @@ body,button,input,select{font-family:var(--font-body)}
 /* Landing selectors are grouped by axis so stay type, location and event can be combined. */
 .landingPills{display:block;overflow:visible}.landingPillGroup{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:start;gap:12px;margin-bottom:10px}.landingPillGroup>strong{padding-top:11px;font-size:13px;color:var(--muted)}.landingPillGroup>div{display:flex;gap:8px;overflow-x:auto;padding:2px;scrollbar-width:none}
 @media(max-width:600px){.landingPillGroup{display:block;margin-bottom:9px}.landingPillGroup>strong{display:block;padding:0 0 5px}.landingPillGroup>div{margin-inline:-16px;padding-inline:16px}}
+.propertyMapLink{display:block;cursor:pointer}.propertyMapLink #propertyMap{height:100%}.propertyMapLink:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
