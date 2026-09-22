@@ -136,3 +136,81 @@ body,button,input,select{font-family:var(--font-body)}
   .cardBottom{font-size:14px}
 }
 .googlePlaceGallery{position:relative}.googlePlaceGallery .mainPhoto{display:block;position:relative}.googlePlaceGallery img{width:100%;height:100%;object-fit:cover}.googlePhotoCredit{position:absolute;right:12px;bottom:12px;background:rgba(255,255,255,.94);color:#1f1f1f;border-radius:6px;padding:6px 10px;font:400 12px/1.3 Roboto,Arial,sans-serif;max-width:calc(100% - 24px)}.googlePhotoCredit a{color:inherit;text-decoration:underline}
+/* Category tabs experiment: contextual filters replace generic region/occasion rails. */
+.categoryFilters{border-bottom:1px solid var(--line);background:#fff;padding:14px max(32px,calc((100vw - 1220px)/2));display:flex;align-items:center;gap:24px;min-height:82px}
+.categoryFiltersHead{min-width:170px;display:flex;align-items:center;justify-content:space-between;gap:12px}.categoryFiltersHead>div{display:grid;gap:2px}.categoryFiltersHead small{color:var(--muted);font-size:11px}.categoryFiltersHead strong{font-size:16px}.categoryFiltersHead button{border:0;background:none;color:var(--brand);font-weight:700}
+.categoryFilterChips{display:flex;align-items:center;gap:9px;overflow-x:auto;scrollbar-width:none;padding:2px}.categoryFilterChips::-webkit-scrollbar{display:none}.categoryFacet{border:1px solid var(--line);border-radius:999px;background:#fff;padding:9px 15px;white-space:nowrap;color:var(--ink);font:600 13px var(--font-body);transition:.18s}.categoryFacet:hover{border-color:#b8afa8}.categoryFacet.active{background:var(--ink);border-color:var(--ink);color:#fff}.categoryFacet.moreFacet{display:flex;align-items:center;gap:6px;background:#faf8f6}.categoryFacet.moreFacet .icon{width:16px;height:16px}
+.demoGoogleCredit{position:absolute;z-index:3;right:10px;bottom:10px;background:rgba(255,255,255,.94);color:#24211f;border-radius:6px;padding:5px 8px;font:500 10px/1.2 Roboto,Arial,sans-serif;text-decoration:none;box-shadow:0 1px 5px #0002}.demoGoogleCredit b{font-weight:600}
+@media(max-width:600px){.categoryFilters{display:block;padding:10px 16px 13px;min-height:0}.categoryFiltersHead{min-width:0;margin-bottom:9px}.categoryFiltersHead small{display:none}.categoryFiltersHead strong{font-size:14px}.categoryFilterChips{margin-inline:-16px;padding-inline:16px}.categoryFacet{padding:8px 13px;font-size:12px}.categoryRail{height:74px}.categoryCard:nth-child(n+7){display:flex}.demoGoogleCredit{right:9px;bottom:9px}}
+
+/* Airbnb category pattern - measured live 2026-09-22 and mapped to our tokens.
+   Desktop: 36px icon, 14/18 medium label, 8-16px label gap, 12px bottom
+   space, transparent tabs and a 2px active underline.
+   Mobile: 40px pill, 10px 14px padding, 4px icon gap, 8px rail gap,
+   24px edge/scroll padding, 16px top + 24px bottom rail padding. */
+.categorySection{background:var(--bg);border-bottom:1px solid var(--line);overflow:hidden}
+.categoryRail{width:var(--page);height:auto;min-height:80px;margin:auto;padding:4px 0 12px;display:flex;justify-content:center;align-items:flex-start;gap:36px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;scroll-padding-inline:24px}
+.categoryRail::-webkit-scrollbar{display:none}
+.categoryCard{position:relative;flex:0 0 auto;min-width:auto;height:64px;margin:0;padding:10px 4px 12px;border:0!important;border-radius:0;background:transparent!important;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--muted);font:500 14px/18px var(--font-body);scroll-snap-align:center;transition:color .18s ease,transform .18s ease}
+.categoryCard .icon{width:36px;height:36px;color:var(--icon-color,currentColor);transition:transform .18s ease}
+.categoryCard strong{font:500 14px/18px var(--font-body);white-space:nowrap}
+.categoryCard::after{content:"";position:absolute;left:4px;right:4px;bottom:0;height:2px;background:var(--ink);transform:scaleX(0);transform-origin:center;border-radius:2px;transition:transform .18s ease}
+.categoryCard:hover,.categoryCard:focus-visible{color:var(--ink)}
+.categoryCard.active{color:var(--ink)!important;transform:translateY(-2px)}
+.categoryCard.active .icon{transform:translateY(-1px)}
+.categoryCard.active::after{transform:scaleX(1)}
+.categoryCard:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+@media(max-width:600px){
+  .categorySection{background:linear-gradient(180deg,#f7f5f2 0%,#fff 100%)}
+  .categoryRail{direction:rtl;width:100%;min-height:80px;justify-content:flex-start;gap:8px;padding:16px 24px 24px;scroll-padding-inline:24px}
+  .categoryRail::after{content:"";display:block;flex:0 0 16px}
+  .categoryCard,.categoryCard:nth-child(n){display:flex;min-width:auto;height:40px;margin:0;padding:10px 14px;border:1px solid rgba(255,255,255,.5)!important;border-radius:40px;background:rgba(255,255,255,.76)!important;gap:4px;color:var(--ink);box-shadow:0 3px 2.5px rgba(0,0,0,.10),0 1px 1px rgba(0,0,0,.15),0 .8px .4px rgba(0,0,0,.15),inset 0 1px 1.5px #fff,inset 0 -1.5px .8px rgba(255,255,255,.6);scroll-snap-align:start;transform:none}
+  .categoryCard .icon{width:20px;height:20px}
+  .categoryCard strong{font:500 14px/18px var(--font-body)}
+  .categoryCard::after{display:none}
+  .categoryCard.active{border-color:#fff!important;background:#fff!important;transform:translateY(-2px);box-shadow:0 3px 2.5px rgba(0,0,0,.12),0 1px 1px rgba(0,0,0,.18),0 .8px .4px rgba(0,0,0,.18),inset 0 1px 1.5px #fff,inset 0 -1.5px .8px rgba(0,0,0,.08)}
+  .categoryCard.active::before{content:"";position:absolute;left:14px;right:14px;bottom:-7px;height:2px;background:var(--ink);border-radius:2px}
+}
+
+/* Airbnb selector refinement: inactive tabs stay plain; only the selected tab becomes a card. */
+.categorySection{border-bottom:0}
+.categoryRail{border-bottom:0}
+@media(max-width:600px){
+  .categorySection{background:var(--bg)}
+  .categoryRail{padding-block:14px 22px}
+  .categoryCard,.categoryCard:nth-child(n){
+    height:44px;
+    padding:10px 12px;
+    border:1px solid transparent!important;
+    border-radius:14px;
+    background:transparent!important;
+    box-shadow:none;
+    color:var(--muted);
+  }
+  .categoryCard:hover,.categoryCard:focus-visible{background:var(--surface)!important;color:var(--ink)}
+  .categoryCard.active{
+    border-color:#dedbd5!important;
+    background:#fff!important;
+    color:var(--ink)!important;
+    transform:translateY(-3px);
+    box-shadow:0 6px 16px rgba(0,0,0,.14),0 2px 4px rgba(0,0,0,.10);
+  }
+  .categoryCard.active::before{left:12px;right:12px;bottom:-7px}
+}
+
+/* Discovery cards lead to indexable landing pages; landing pages switch the same choices to pills. */
+.discoverySection{width:var(--page);margin:auto;padding:30px 0 34px}.discoveryIntro p,.landingHero>p:first-of-type{margin:0 0 5px;color:var(--brand);font-weight:700;font-size:13px}.discoveryIntro h1,.landingHero h1{font:700 clamp(32px,4vw,48px)/1.05 var(--font-display);margin:0 0 8px}.discoveryIntro>span,.landingHero #landingDescription{color:var(--muted);font-size:15px}.discoveryGroups{display:grid;gap:25px;margin-top:26px}.discoveryGroups>section h2{font-size:18px;margin:0 0 12px}.discoveryCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.discoveryCard{min-height:138px;border:1px solid var(--line);border-radius:18px;padding:19px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-content:end;column-gap:14px;background:linear-gradient(145deg,#fff,#f5f2ed);color:var(--ink);text-decoration:none;box-shadow:0 2px 8px #0000000a;transition:transform .18s,box-shadow .18s,border-color .18s}.discoveryCard:hover{transform:translateY(-3px);border-color:#bfb9b0;box-shadow:0 10px 24px #00000016}.discoveryCard .icon{width:38px;height:38px;grid-row:1/3;color:var(--brand)}.discoveryCard strong{font-size:18px;align-self:end}.discoveryCard small{color:var(--muted);line-height:1.4}.landingHero{width:var(--page);margin:20px auto 0;padding:34px;border-radius:24px;background:linear-gradient(135deg,#f8f4ee,#fff);border:1px solid #ebe6de}.landingHero .landingBack{display:inline-block;color:var(--muted);font-size:13px;margin-bottom:24px}.landingHero #landingDescription{margin:0;max-width:650px}.landingPills{width:var(--page);margin:18px auto 6px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}.landingPills a{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:9px 14px;color:var(--ink);text-decoration:none;font-weight:600;font-size:13px;background:#fff}.landingPills a.active{background:var(--ink);border-color:var(--ink);color:#fff}.landingPills[hidden],.landingHero[hidden],.discoverySection[hidden]{display:none!important}
+@media(max-width:700px){.discoverySection{width:100%;padding:20px 16px 26px}.discoveryIntro h1{font-size:31px}.discoveryGroups{gap:22px}.discoveryCards{display:flex;overflow-x:auto;gap:11px;margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px;scroll-snap-type:x mandatory}.discoveryCard{flex:0 0 78%;min-height:150px;scroll-snap-align:start}.landingHero{width:calc(100% - 32px);margin-top:14px;padding:24px 20px}.landingHero h1{font-size:31px}.landingPills{width:100%;padding-inline:16px;margin-top:14px}}
+
+/* Airbnb-style image discovery cards. Each card uses free-licensed Commons imagery. */
+.discoveryCard{position:relative;isolation:isolate;min-height:210px;overflow:hidden;padding:0;border:0;background:#ddd;display:flex;align-items:flex-end;box-shadow:none}.discoveryCard::before{content:"";position:absolute;inset:0;z-index:-2;background-image:var(--card-image);background-size:cover;background-position:center;transition:transform .35s ease}.discoveryCard::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 32%,rgba(15,15,15,.08) 50%,rgba(15,15,15,.82) 100%)}.discoveryCard:hover{border:0;box-shadow:0 12px 28px #0003}.discoveryCard:hover::before{transform:scale(1.035)}.discoveryCard .icon{display:none}.discoveryCard strong,.discoveryCard small{position:absolute;right:18px;left:18px;color:#fff;text-shadow:0 1px 3px #0008}.discoveryCard strong{bottom:42px;font-size:21px}.discoveryCard small{bottom:18px;font-size:13px;color:#fff}.discoveryGroups>section h2{font-size:16px;color:var(--muted)}
+@media(max-width:700px){.discoveryCard{flex-basis:75%;min-height:230px;border-radius:18px}.discoveryCard strong{font-size:22px}.discoveryGroups>section h2{padding-inline:0}.discoveryCards{padding-bottom:4px}}
+
+/* Simplified search, then an Airbnb-like quiet landing surface after selection. */
+.searchDock{border-bottom:0;padding-bottom:16px}.searchBar{height:56px;max-width:680px;border-radius:999px;padding:5px 8px}.searchBar label{padding-inline:16px}.searchBar .primaryBtn{display:none}.searchBar .secondaryBtn{border-right:0;border-left:1px solid var(--line);padding-inline:16px}.searchBar .filterLabel{font-size:13px}.trustStrip{display:none!important}
+.landingHero{position:relative;margin-top:18px;min-height:250px;padding:42px 44px;background:#f7f7f7;border:0;border-radius:20px;display:flex;flex-direction:column;justify-content:flex-end}.landingHero::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}.landingHero .landingBack{position:absolute;top:24px;right:28px;margin:0;text-decoration:none;color:var(--ink);font-weight:600}.landingHero>p:first-of-type{color:var(--muted);font-size:12px}.landingHero h1{font-family:var(--font-body);font-size:clamp(30px,4vw,44px);letter-spacing:-.8px;margin-bottom:6px}.landingHero #landingDescription{max-width:620px;line-height:1.55}.landingPills{margin-top:14px;gap:10px}.landingPills a{padding:10px 16px;border-color:#ddd;border-radius:999px;font-size:14px;transition:.16s}.landingPills a:hover{border-color:#222}.landingPills a.active{background:#222;color:#fff;box-shadow:0 2px 5px #0002}.categoryFilters{border:0;padding-top:10px;padding-bottom:10px;min-height:64px}.categoryFiltersHead{display:none}.categoryFilterChips{gap:8px}.categoryFacet{padding:9px 14px;border-color:#ddd;background:#fff}.categoryFacet.active{background:#222;border-color:#222}.resultsHead{border-top:0;padding-top:24px}
+@media(max-width:600px){.searchDock{padding:4px 0 10px}.searchBar{height:48px;width:calc(100% - 32px);box-shadow:0 2px 7px #0002}.searchBar label{min-height:0;border:0;justify-content:flex-start}.searchBar label>.icon{display:block}.searchBar input{display:block;font-size:14px}.searchPrompt{display:none}.searchBar .secondaryBtn{padding-inline:12px;border-left:0}.searchBar .filterLabel{display:none}.landingHero{min-height:220px;padding:72px 22px 24px;border-radius:18px}.landingHero .landingBack{top:20px;right:22px}.landingHero h1{font-size:31px}.landingPills{padding-inline:16px;margin-top:12px}.landingPills a{padding:9px 14px}.categoryFilters{padding:8px 0}.categoryFilterChips{padding-inline:16px;margin:0}.resultsHead{padding-top:16px}}
+/* Icons keep both landing-page pill rails recognizable at a glance. */
+.landingPills a,.categoryFacet{display:inline-flex;align-items:center;gap:7px}
+.landingPills .icon,.categoryFacet .icon{width:17px;height:17px;flex:0 0 17px}
+.landingPills .icon svg,.categoryFacet .icon svg{display:block}
