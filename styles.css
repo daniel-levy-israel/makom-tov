@@ -214,3 +214,8 @@ body,button,input,select{font-family:var(--font-body)}
 .landingPills a,.categoryFacet{display:inline-flex;align-items:center;gap:7px}
 .landingPills .icon,.categoryFacet .icon{width:17px;height:17px;flex:0 0 17px}
 .landingPills .icon svg,.categoryFacet .icon svg{display:block}
+/* Restored discovery choices: the original full type, audience, occasion and amenity set. */
+.moreDiscovery{margin-top:4px}.moreDiscovery h2{font-size:18px;margin:0 0 12px}.moreDiscoveryCards{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}.moreDiscoveryCards a{min-height:92px;border:1px solid #e3e3e3;border-radius:16px;background:#fff;color:var(--ink);text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:12px 8px;text-align:center;transition:.16s}.moreDiscoveryCards a:hover{border-color:#222;transform:translateY(-2px)}.moreDiscoveryCards .icon{width:25px;height:25px}.moreDiscoveryCards b{font-size:13px}
+@media(max-width:700px){.moreDiscovery{margin-inline:-16px}.moreDiscovery h2{padding-inline:16px}.moreDiscoveryCards{display:flex;overflow-x:auto;gap:9px;padding:2px 16px 8px;scrollbar-width:none}.moreDiscoveryCards a{flex:0 0 106px;min-height:88px}}
+/* Landing headers should read as headers, not empty placeholder panels. */
+@media(max-width:600px){.landingHero{min-height:0;padding:58px 22px 20px;background:#fafafa}.landingHero .landingBack{top:18px}.landingHero>p:first-of-type{margin-top:4px}.landingHero h1{font-size:29px;line-height:1.1}.landingHero #landingDescription{font-size:14px;line-height:1.45}.landingPills{margin-top:10px}}
