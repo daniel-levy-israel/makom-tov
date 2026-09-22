@@ -219,7 +219,3 @@ body,button,input,select{font-family:var(--font-body)}
 @media(max-width:700px){.moreDiscovery{margin-inline:-16px}.moreDiscovery h2{padding-inline:16px}.moreDiscoveryCards{display:flex;overflow-x:auto;gap:9px;padding:2px 16px 8px;scrollbar-width:none}.moreDiscoveryCards a{flex:0 0 106px;min-height:88px}}
 /* Landing headers should read as headers, not empty placeholder panels. */
 @media(max-width:600px){.landingHero{min-height:0;padding:58px 22px 20px;background:#fafafa}.landingHero .landingBack{top:18px}.landingHero>p:first-of-type{margin-top:4px}.landingHero h1{font-size:29px;line-height:1.1}.landingHero #landingDescription{font-size:14px;line-height:1.45}.landingPills{margin-top:10px}}
-/* Landing selectors are grouped by axis so the current stay, location and event stay legible. */
-.landingPills{display:block;overflow:visible}.landingPillGroup{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:start;gap:12px;margin-bottom:10px}.landingPillGroup>strong{padding-top:11px;font-size:13px;color:var(--muted)}.landingPillGroup>div{display:flex;gap:8px;overflow-x:auto;padding:2px;scrollbar-width:none}
-@media(max-width:600px){.landingPillGroup{display:block;margin-bottom:9px}.landingPillGroup>strong{display:block;padding:0 0 5px}.landingPillGroup>div{margin-inline:-16px;padding-inline:16px}}
-.officialMediaCredit{width:var(--page);margin:7px auto 0;color:var(--muted);font-size:12px}.officialMediaCredit a{color:inherit}
