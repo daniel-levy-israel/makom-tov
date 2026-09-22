@@ -230,3 +230,17 @@ body,button,input,select{font-family:var(--font-body)}
 @media(max-width:600px){.drawer{display:flex;align-items:flex-end}.drawerShade{background:#0008}.drawer aside{top:auto;left:0;right:0;bottom:0;width:100%;height:min(88vh,760px);border-radius:22px 22px 0 0;transform:translateY(105%)}.drawer.open aside{transform:none}.drawerHead{padding:15px 18px}.drawerHead .eyebrow{display:none}.drawerHead h2{font-size:22px}.drawerBody{padding:18px;gap:18px}.drawerFoot{padding:13px 18px calc(13px + env(safe-area-inset-bottom))}.drawerFoot .primaryBtn{min-width:170px}.drawerSort .drawerChoices{display:grid;grid-template-columns:1fr}.drawerSort button{width:100%;text-align:right}.drawerChoices button{min-height:44px}}
 /* Every card rail scrolls horizontally on mobile and all cards remain reachable. */
 @media(max-width:700px){.discoveryCards{scrollbar-width:none}.discoveryCards::-webkit-scrollbar{display:none}.discoveryCards::after{content:"";flex:0 0 5px}.discoveryGroups>section{min-width:0}}
+
+/* Keep every discovery axis to one horizontal rail on desktop, too. */
+@media(min-width:701px){
+  .discoveryGroups>section{position:relative}
+  .discoveryGroups>section>h2{padding-inline-end:104px}
+  .discoveryCards{display:flex;grid-template-columns:none;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:2px;padding:2px 2px 10px;scrollbar-width:thin;scrollbar-color:#c9c4bc transparent;overscroll-behavior-inline:contain}
+  .discoveryCard{flex:0 0 min(31%,360px);scroll-snap-align:start}
+  .discoveryCards::after{content:"";flex:0 0 18px}
+  .carouselNav{position:absolute;inset-inline-end:0;top:-4px;display:flex;direction:ltr;gap:8px;z-index:2}
+  .carouselNav button{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:#fff;display:grid;place-items:center;font-size:22px;line-height:1;box-shadow:0 3px 10px #0001}
+  .carouselNav button:hover{border-color:#aaa49b;box-shadow:0 5px 14px #0002}
+  .carouselNav button:disabled{opacity:.35;cursor:default;box-shadow:none}
+}
+@media(max-width:700px){.carouselNav{display:none}}

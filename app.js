@@ -100,3 +100,24 @@ $('#propertyView').innerHTML=`<article class="propertyPage"><div class="property
 
 function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',1600)}
 skeleton();paintIcons();Promise.all([fetch('/api/properties?limit=6000').then(r=>{if(!r.ok)throw new Error('api');return r.json()}).then(r=>Array.isArray(r)?r:r.items).catch(()=>fetch('/properties.json').then(r=>r.json())),fetch('/demo-google-photos.json').then(r=>r.ok?r.json():{})]).then(([x,demo])=>{all=x;demoGooglePhotos=demo;init()}).catch(()=>{$('#count').textContent='לא הצלחנו לטעון את המקומות';});
+
+// Desktop discovery rails: explicit controls keep every axis on one row.
+(function initDiscoveryCarousels(){
+  const desktop=()=>window.matchMedia('(min-width:701px)').matches;
+  document.querySelectorAll('.discoveryGroups>section').forEach((section,index)=>{
+    const rail=section.querySelector('.discoveryCards');
+    if(!rail||section.querySelector('.carouselNav'))return;
+    rail.setAttribute('tabindex','0');
+    rail.setAttribute('role','region');
+    rail.setAttribute('aria-label',`${section.querySelector('h2')?.textContent||'אפשרויות'} - קרוסלה`);
+    const nav=document.createElement('div');nav.className='carouselNav';
+    nav.innerHTML='<button type="button" class="carouselPrev" aria-label="הקודם">→</button><button type="button" class="carouselNext" aria-label="הבא">←</button>';
+    section.append(nav);
+    const prev=nav.querySelector('.carouselPrev'),next=nav.querySelector('.carouselNext');
+    const update=()=>{if(!desktop()){prev.disabled=next.disabled=true;return}const max=rail.scrollWidth-rail.clientWidth;prev.disabled=rail.scrollLeft>-2;next.disabled=Math.abs(rail.scrollLeft)>=max-2};
+    const step=()=>Math.max(rail.clientWidth*.82,280);
+    prev.addEventListener('click',()=>rail.scrollBy({left:step(),behavior:'smooth'}));
+    next.addEventListener('click',()=>rail.scrollBy({left:-step(),behavior:'smooth'}));
+    rail.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);requestAnimationFrame(update);
+  });
+})();
