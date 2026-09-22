@@ -38,3 +38,7 @@ Required production variables:
 - `OWNER_ADMIN_TOKEN`: long random bearer token for approving an already-verified owner claim and issuing its upload link.
 
 After deployment, run `npm run db:migrate` once against the production `DATABASE_URL`. The migration is idempotent. Google fallback remains off until its key is configured; this is deliberate to prevent accidental billing.
+
+### Official-website refresh boundary
+
+Official property websites may refresh structured facts such as current amenities, capacity, prices and contact details. Every refreshed field must retain its source URL and retrieval time. Website galleries are not an image source unless the owner has documented permission for Makom Tov to use those exact images. The only automatic image fallback is Google Places API photos with the returned attribution; Google Images scraping and legacy competitor images are prohibited.
