@@ -31,6 +31,11 @@ const landingPages={
  '/stays/חאנים':{axis:'סוג מקום',title:'חאנים בישראל',description:'חאנים ומתחמי אירוח לקבוצות, משפחות וחובבי טבע.',category:'חאנים'},
  '/stays/מלונות':{axis:'סוג מקום',title:'מלונות בישראל',description:'בתי מלון לחופשה זוגית, משפחתית ועירונית.',category:'בתי מלון'},
  '/stays/קמפינג':{axis:'סוג מקום',title:'קמפינג בישראל',description:'חניוני לילה ומתחמי קמפינג בטבע.',category:'קמפינג'},
+ '/stays/קרוואנים':{axis:'סוג מקום',title:'קרוואנים בישראל',description:'קרוואנים וחופשות ניידות ברחבי הארץ.',category:'קרוואנים'},
+ '/stays/סוויטות':{axis:'סוג מקום',title:'סוויטות בישראל',description:'סוויטות מרווחות לחופשה זוגית או משפחתית.',category:'סוויטות'},
+ '/stays/הוסטלים':{axis:'סוג מקום',title:'הוסטלים בישראל',description:'לינה חברתית ונגישה בערים וביעדי טיול.',category:'הוסטלים'},
+ '/stays/לופטים':{axis:'סוג מקום',title:'לופטים בישראל',description:'חללי אירוח עירוניים פתוחים ומעוצבים.',category:'לופטים'},
+ '/stays/מלונות-בוטיק':{axis:'סוג מקום',title:'מלונות בוטיק בישראל',description:'מלונות קטנים עם אופי ושירות אישי.',category:'בתי מלון בוטיק'},
  '/themes/לזוגות':{axis:'למי',title:'מקומות לזוגות',description:'מקומות שמתאימים לחופשה זוגית ורומנטית.',occasion:'couple'},
  '/themes/למשפחות':{axis:'למי',title:'מקומות למשפחות',description:'מקומות אירוח שמתאימים לחופשה משפחתית.',occasion:'family'},
  '/themes/לקבוצות':{axis:'למי',title:'מקומות לקבוצות',description:'מתחמים שמתאימים לאירוח קבוצות.',occasion:'group'},
@@ -44,7 +49,7 @@ const landingPages={
  '/events/מסיבת-רווקות':{axis:'אירוע',title:'מקומות למסיבת רווקות',description:'מקומות שמסומנים כמתאימים למסיבת רווקות.',event:'bachelorette'}
 };
 const landingPillGroups=[
- {axis:'סוג מקום',key:'stay',items:[['צימרים','צימרים','cabin','/stays/צימרים'],['וילות','וילות','villa','/stays/וילות'],['דירות נופש','דירות נופש','apartment','/stays/דירות-נופש'],['חאנים','חאנים','khan','/stays/חאנים'],['בתי מלון','מלונות','hotel','/stays/מלונות'],['קמפינג','קמפינג','camp','/stays/קמפינג']]},
+ {axis:'סוג מקום',key:'stay',items:[['צימרים','צימרים','cabin','/stays/צימרים'],['וילות','וילות','villa','/stays/וילות'],['דירות נופש','דירות נופש','apartment','/stays/דירות-נופש'],['חאנים','חאנים','khan','/stays/חאנים'],['בתי מלון','מלונות','hotel','/stays/מלונות'],['קמפינג','קמפינג','camp','/stays/קמפינג'],['קרוואנים','קרוואנים','camp','/stays/קרוואנים'],['סוויטות','סוויטות','hotel','/stays/סוויטות'],['הוסטלים','הוסטלים','group','/stays/הוסטלים'],['לופטים','לופטים','apartment','/stays/לופטים'],['בתי מלון בוטיק','מלונות בוטיק','hotel','/stays/מלונות-בוטיק']]},
  {axis:'אזור',key:'region',items:[['צפון','צפון','view'],['חיפה והכרמל','חיפה והכרמל','view'],['השרון','השרון','pin'],['מרכז','מרכז','pin'],['ירושלים','ירושלים','pin'],['ים המלח','ים המלח','view'],['נגב','נגב','view'],['ערבה','ערבה','view'],['אילת','אילת','pool']]},
  {axis:'אירוע',key:'event',items:[['birthday','יום הולדת','celebration'],['bachelor','מסיבת רווקים','celebration'],['bachelorette','מסיבת רווקות','celebration'],['familyEvent','אירוע משפחתי','family'],['proposal','הצעת נישואין','couple']]}
 ];
@@ -95,3 +100,24 @@ $('#propertyView').innerHTML=`<article class="propertyPage"><div class="property
 
 function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',1600)}
 skeleton();paintIcons();Promise.all([fetch('/api/properties?limit=6000').then(r=>{if(!r.ok)throw new Error('api');return r.json()}).then(r=>Array.isArray(r)?r:r.items).catch(()=>fetch('/properties.json').then(r=>r.json())),fetch('/demo-google-photos.json').then(r=>r.ok?r.json():{})]).then(([x,demo])=>{all=x;demoGooglePhotos=demo;init()}).catch(()=>{$('#count').textContent='לא הצלחנו לטעון את המקומות';});
+
+// Desktop discovery rails: explicit controls keep every axis on one row.
+(function initDiscoveryCarousels(){
+  const desktop=()=>window.matchMedia('(min-width:701px)').matches;
+  document.querySelectorAll('.discoveryGroups>section').forEach((section,index)=>{
+    const rail=section.querySelector('.discoveryCards');
+    if(!rail||section.querySelector('.carouselNav'))return;
+    rail.setAttribute('tabindex','0');
+    rail.setAttribute('role','region');
+    rail.setAttribute('aria-label',`${section.querySelector('h2')?.textContent||'אפשרויות'} - קרוסלה`);
+    const nav=document.createElement('div');nav.className='carouselNav';
+    nav.innerHTML='<button type="button" class="carouselPrev" aria-label="הקודם">→</button><button type="button" class="carouselNext" aria-label="הבא">←</button>';
+    section.append(nav);
+    const prev=nav.querySelector('.carouselPrev'),next=nav.querySelector('.carouselNext');
+    const update=()=>{if(!desktop()){prev.disabled=next.disabled=true;return}const max=rail.scrollWidth-rail.clientWidth;prev.disabled=rail.scrollLeft>-2;next.disabled=Math.abs(rail.scrollLeft)>=max-2};
+    const step=()=>Math.max(rail.clientWidth*.82,280);
+    prev.addEventListener('click',()=>rail.scrollBy({left:step(),behavior:'smooth'}));
+    next.addEventListener('click',()=>rail.scrollBy({left:-step(),behavior:'smooth'}));
+    rail.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);requestAnimationFrame(update);
+  });
+})();
