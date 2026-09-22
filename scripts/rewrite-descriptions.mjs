@@ -37,11 +37,16 @@ function core(p){
  if(has(p,'חנייה')) a.push('חנייה');
  if(has(p,'אינטרנט wifi')) a.push('Wi-Fi');
  if(!a.length && has(p,'מיזוג אוויר')) a.push('מיזוג אוויר');
- return a.slice(0,5);
+ if(has(p,'ארוחות בוקר')) a.push('אפשרות לארוחת בוקר');
+ if(has(p,'מרחב מוגן')) a.push('מרחב מוגן');
+ if(has(p,'מתחם ספא וטיפולים אלטרנטיביים')||has(p,'טיפולי ספא')) a.push('טיפולי ספא');
+ if(has(p,'חיות מחמד')) a.push('אפשרות לאירוח עם חיות מחמד');
+ if(has(p,'גישה לנכים ועגלות: 1')) a.push('גישה לעגלות ולכיסאות גלגלים');
+ return a.slice(0,7);
 }
 function facilities(p){
  const a=core(p); if(!a.length) return '';
- return `בין המתקנים הרשומים: ${a.join(', ')}.`;
+ return `לפי פרטי הנכס, מתקני האירוח כוללים ${a.join(', ')}.`;
 }
 function audience(p){
  const a=[];
@@ -55,7 +60,7 @@ function audience(p){
   else if(p.category==='צימרים'||p.category==='סוויטות') a.push('זוגות ומשפחות');
   else a.push('אורחים שמחפשים לינה באזור');
  }
- return `המקום מסומן כמתאים ל${a.slice(0,3).join(', ')}.`;
+ return `אפשרויות האירוח מסומנות כמתאימות ל${a.slice(0,4).join(', ')}.`;
 }
 function context(p){
  const a=[];
@@ -66,7 +71,7 @@ function context(p){
  if(has(p,'שייט')) a.push('שייט');
  if(has(p,'רכיבה על סוסים')) a.push('רכיבה על סוסים');
  if(!a.length) return '';
- return `בסביבה מופיעות אפשרויות ל${a.slice(0,3).join(', ')}.`;
+ return a.slice(0,4).map((x,i)=>`${['בסביבה אפשר למצוא','אפשר גם לבדוק','פעילות נוספת הרשומה באזור היא','עוד אפשרות מקומית היא'][i]} ${x}`).join('. ')+'.';
 }
 function price(p){
  if(p.priceMin>0&&p.priceMax>=p.priceMin) return `טווח המחיר הרשום הוא ${p.priceMin===p.priceMax?p.priceMin:`${p.priceMin}-${p.priceMax}`} ₪, ויש לאמת זמינות ומחיר מול המקום.`;
@@ -76,11 +81,10 @@ function words(s){return s.match(/[\p{L}\p{N}״׳"'-]+/gu)?.length||0}
 function make(p){
  let seg=[opening(p),scale(p),facilities(p),audience(p),context(p),price(p)].filter(Boolean);
  let s=compact(seg.join(' '));
- if(words(s)<60) s=compact(s+' פרטי האירוח והמתקנים עשויים להשתנות בין היחידות ובעונות שונות, ולכן מומלץ לוודא אותם לפני ההזמנה.');
  if(words(s)>90){
    seg=[opening(p),scale(p),facilities(p),audience(p),price(p)].filter(Boolean); s=compact(seg.join(' '));
  }
- if(words(s)<60) s=compact(s+' המידע מבוסס על פרטי הנכס הזמינים כעת; לפני שסוגרים, מומלץ לפנות למארחים ולבדוק מה כלול, אילו יחידות פנויות, מהם תנאי הביטול והאם קיימות מגבלות מיוחדות להרכב המבוקש.');
+ if(words(s)<60) s=compact(s+' הרשומה כוללת מידע בסיסי בלבד. לפני הזמנה יש לאמת מול המארחים את היחידה, המתקנים, הקיבולת, הזמינות, המחיר, תנאי הביטול והמגבלות להרכב המבוקש.');
  return s;
 }
 for(const p of targets) p.desc=make(p);

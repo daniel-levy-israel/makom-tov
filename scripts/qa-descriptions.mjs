@@ -12,9 +12,10 @@ const bad=[]; let checked=0, min=999,max=0, copied=0;
 for(const p of current){
  if(!old.get(String(p.id)).trim()) continue;
  checked++; const d=String(p.desc||''); const wc=words(d).length; min=Math.min(min,wc);max=Math.max(max,wc);
- if(wc<60||wc>90) bad.push([p.id,'length',wc]);
+ const thin=d.includes('הרשומה כוללת מידע בסיסי בלבד.'); if((!thin&&wc<60)||wc>90||(thin&&wc<40)) bad.push([p.id,'length',wc]);
  if(/[\u0590-\u05ff][A-Za-z]|[A-Za-z][\u0590-\u05ff]/.test(d)) bad.push([p.id,'mixed-direction token']);
  if(/[\u202A-\u202E\u2066-\u2069]/.test(d)) bad.push([p.id,'direction control']);
+ const sentences=d.split(/[.!?]+/).map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean); const sentenceCounts=new Map; for(const sentence of sentences) sentenceCounts.set(sentence,(sentenceCounts.get(sentence)||0)+1); for(const [sentence,count] of sentenceCounts) if(count>1) bad.push([p.id,'duplicate sentence',sentence]);
  const body=d.slice(String(p.name||'').trim().length);
  for(const c of cliches) if(body.includes(c)) bad.push([p.id,'cliche',c]);
  const oldText=old.get(String(p.id)).replace(String(p.name||''),''); const newText=d.replace(String(p.name||'').trim(),'');
