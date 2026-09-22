@@ -223,3 +223,5 @@ body,button,input,select{font-family:var(--font-body)}
 .landingPills{display:block;overflow:visible}.landingPillGroup{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:start;gap:12px;margin-bottom:10px}.landingPillGroup>strong{padding-top:11px;font-size:13px;color:var(--muted)}.landingPillGroup>div{display:flex;gap:8px;overflow-x:auto;padding:2px;scrollbar-width:none}
 @media(max-width:600px){.landingPillGroup{display:block;margin-bottom:9px}.landingPillGroup>strong{display:block;padding:0 0 5px}.landingPillGroup>div{margin-inline:-16px;padding-inline:16px}}
 .propertyMapLink{display:block;cursor:pointer}.propertyMapLink #propertyMap{height:100%}.propertyMapLink:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+/* Mobile landing intro is a compact header, not a card-like empty panel. */
+@media(max-width:600px){.landingHero{width:100%;margin-top:6px;padding:52px 16px 12px;background:transparent;border-radius:0}.landingHero::after{display:none}.landingHero .landingBack{right:16px}.landingHero h1{font-size:28px}.landingHero #landingDescription{max-width:340px}.landingPills{margin-top:5px}}
